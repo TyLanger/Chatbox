@@ -1,0 +1,45 @@
+<html>
+<body>
+
+<!-- select a chatroom to go to
+-->
+
+<form name="chatboxSelection" method="post" action="chatbox.php">
+Select a ChatBox:
+
+<?php
+
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
+	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+	$link = mysqli_connect('localhost', 'test', 'test123', 'chatbox_db');
+
+	if(!$link) {
+		echo "Debugging error: " . mysqli_error() . '<br />';
+	}
+
+	// get all the chatrooms from the server
+	$query = "SELECT `name` FROM `chatroom`";
+	$result = mysqli_query($link, $query);
+	$value = 1;
+
+	// fill out the drop down menu with them
+	echo '<select name="cmbChatbox">';
+	while($row = mysqli_fetch_array($result))
+	{
+		$prettyName = str_replace("_message", "", $row['name']);
+		echo '<option value="' . htmlspecialchars($row['name']).'">' . htmlspecialchars($prettyName) . '</option>';
+		$value +=1;
+	}
+	echo '</select>';
+	echo '<br />';
+
+?>
+
+<input type="submit" name="btnSubmit" /> <br />
+New ChatBox Name: <input type="text" name="newRoomName"/><br />
+<input type="submit" name="btnCreateBox" method="post" formaction="createBox.php" value="Create New ChatBox">
+
+</body>
+</html>
